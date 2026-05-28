@@ -20,9 +20,10 @@ jobs:
       run: |
         pip install mlflow scikit-learn pandas numpy matplotlib
 
-    - name: Run MLflow Project Retraining
+    - name: Run Python Modelling
       run: |
-        mlflow run MLProject --no-conda
+        cd MLProject
+        python modelling.py
 
     - name: Save Artifacts
       uses: actions/upload-artifact@v4
