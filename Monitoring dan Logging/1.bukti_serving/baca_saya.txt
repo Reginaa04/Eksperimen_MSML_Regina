@@ -1,0 +1,1 @@
+Simpan screenshot terminal sukses run inference.py di sini.
