@@ -1,0 +1,4 @@
+Sistem Alerting Grafana Reginaa04:
+1. Rules Akurasi Model: Alert jika ml_model_accuracy_reginaa04 < 0.70
+2. Rules Overload CPU: Alert jika system_cpu_usage_percent_reginaa04 > 80%
+3. Rules Latency High: Alert jika ml_prediction_latency_seconds_reginaa04 > 2 detik
