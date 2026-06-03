@@ -1,35 +1,40 @@
-name: Machine Learning Workflow CI
+name: Machine Learning Workflow CI Advance
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
 
 jobs:
-  retrain-model:
+  train-and-build-docker:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: '3.9'
 
     - name: Install Dependencies
       run: |
-        pip install mlflow scikit-learn pandas numpy matplotlib
+        pip install mlflow scikit-learn pandas numpy
 
-    - name: Run Retraining Simulation
+    - name: Run MLflow Project (Training)
       run: |
-        echo "Memulai otomatisasi re-training model..."
-        echo "Memuat dataset dari folder MLProject..."
-        echo "Model sukses dilatih kembali otomatis via CI trigger!"
-        mkdir -p MLProject/mlruns
-        echo "Model artifacts berhasil disimpan." > MLProject/mlruns/model_status.txt
+        mlflow run MLProject --no-conda
 
-    - name: Save Artifacts
-      uses: actions/upload-artifact@v4
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
       with:
-        name: trained-model-artifacts
-        path: MLProject/
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build Docker Image via MLflow
+      run: |
+        # Membungkus model hasil training (folder 0) menjadi Docker Image
+        mlflow models build-docker -m "mlruns/0" -n "Reginaaa04/model-sml:latest" --enable-mlserver
+
+    - name: Push Docker Image to Docker Hub
+      run: |
+        docker push Reginaaa04/model-sml:latest
