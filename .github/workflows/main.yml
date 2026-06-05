@@ -32,8 +32,8 @@ jobs:
 
     - name: Build Docker Image via MLflow
       run: |
-        # Menggunakan jalur langsung runs: yang otomatis membaca run ID terakhir
-        mlflow models build-docker -m "runs:/$(ls -t mlruns/0/ | grep -v 'meta.yaml' | head -n 1)/model" -n "reginaa04/model-sml:latest" --enable-mlserver
+        # Tembak langsung folder v1_model yang sudah pasti dibuat oleh python tadi!
+        mlflow models build-docker -m "v1_model" -n "reginaa04/model-sml:latest" --enable-mlserver
 
     - name: Push Docker Image to Docker Hub
       run: |
