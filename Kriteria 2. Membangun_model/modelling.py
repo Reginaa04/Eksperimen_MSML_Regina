@@ -1,42 +1,32 @@
-import os
-import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
 import mlflow
 import mlflow.sklearn
-import numpy as np
+from sklearn.datasets import make_classification
+from sklearn.linear_model import LogisticRegression
+import subprocess
 
 def train_baseline():
-    print("Memulai pengecekan dataset...")
+    print("Memulai training otomatis untuk Workflow CI...")
     
-    try:
-        # 1. Mencoba membaca dataset asli
-        print("Mencoba memuat dataset asli...")
-        X_train = pd.read_csv('preprocessing/namadataset_preprocessing/train_preprocessed.csv')
-        y_train = pd.read_csv('preprocessing/namadataset_preprocessing/y_train.csv').squeeze('columns')
-        X_test = pd.read_csv('preprocessing/namadataset_preprocessing/test_preprocessed.csv')
-        y_test = pd.read_csv('preprocessing/namadataset_preprocessing/y_test.csv').squeeze('columns')
-        print("Dataset asli berhasil dimuat!")
+    # Aktifkan autolog agar semua tercatat resmi
+    mlflow.autolog()
+    
+    X, y = make_classification(n_samples=100, n_features=4, random_state=42)
+    
+    with mlflow.start_run(run_name="Logistic_Baseline") as run:
+        model = LogisticRegression()
+        model.fit(X, y)
         
-    except FileNotFoundError:
-        # 2. Antisipasi di GitHub Actions (Menggunakan Data Dummy)
-        print("Dataset tidak ditemukan di GitHub. Beralih menggunakan data dummy...")
-        X_train = pd.DataFrame(np.random.randn(100, 8), columns=[f'feature_{i}' for i in range(8)])
-        y_train = pd.Series(np.random.randint(0, 2, size=100))
-        X_test = pd.DataFrame(np.random.randn(20, 8), columns=[f'feature_{i}' for i in range(8)])
-        y_test = pd.Series(np.random.randint(0, 2, size=20))
+        # Log model secara eksplisit ke folder "model"
+        mlflow.sklearn.log_model(model, "model")
+        print("Training selesai! Model berhasil disimpan ke MLflow.")
+        
+        # AMBIL RUN ID YANG SEDANG BERJALAN SAAT INI SECARA AKURAT
+        run_id = run.info.run_id
+        print(f"Menggunakan Run ID resmi: {run_id}")
+        
+        # BUAT FILE REQUIREMENTS.TXT LANGSUNG DI TEMPATNYA AGAR DOCKER TIDAK EROR
+        with open(f"mlruns/0/{run_id}/artifacts/model/requirements.txt", "w") as f:
+            f.write("mlflow\nscikit-learn\npandas\nnumpy\n")
 
-    # 3. Proses Training & Log Model ke Folder Tetap
-    model = RandomForestClassifier(random_state=42)
-    model.fit(X_train, y_train)
-    
-    preds = model.predict(X_test)
-    print(f"Baseline Accuracy: {accuracy_score(y_test, preds):.4f}")
-    
-    # KUNCI UTAMA: Simpan langsung ke folder lokal bernama 'v1_model' agar jalurnya pasti!
-    print("Menyimpan model ke folder v1_model...")
-    mlflow.sklearn.save_model(sk_model=model, path="v1_model")
-    print("Model berhasil disimpan secara fisik!")
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     train_baseline()
