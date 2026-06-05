@@ -1,4 +1,4 @@
-name: Machine Learning Workflow CI Advance
+name: Machine Learning Workflow CI Regina Pasti Berhasil
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
       uses: docker/login-action@v2
       with:
         username: reginaa04
-        password: dckr_pat_gJ2myf-MxqfZOD4PaQv5XFhn02g
+        password: dckr_pat_dxWp9BtW0beIytM5XFuCgJORUBw
 
     - name: Build Docker Image via MLflow
       run: |
