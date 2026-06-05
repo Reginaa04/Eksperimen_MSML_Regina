@@ -1,0 +1,19 @@
+{
+  "status": "success",
+  "message": "Model inference running successfully on serving port",
+  "input_data": {
+    "Pregnancies": 2,
+    "Glucose": 138,
+    "BloodPressure": 62,
+    "SkinThickness": 35,
+    "Insulin": 0,
+    "BMI": 33.6,
+    "DiabetesPedigreeFunction": 0.127,
+    "Age": 47
+  },
+  "prediction_result": {
+    "diabetes_status": 1,
+    "confidence_score": 0.78,
+    "timestamp": "2026-06-05T16:00:00Z"
+  }
+}
