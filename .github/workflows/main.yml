@@ -30,10 +30,10 @@ jobs:
         username: reginaa04
         password: dckr_pat_dxWp9BtW0beIytM5XFuCgJORUBw
 
-    - name: Build Docker Image via MLflow
+    - name: Build Docker Image Standard
       run: |
-        # Kita arahkan jalurnya ke MLProject/v1_model karena disitulah python menyimpannya!
-        mlflow models build-docker -m "MLProject/v1_model" -n "reginaa04/model-sml:latest" --enable-mlserver
+        # Menggunakan perintah docker build standar yang anti-gagal dan super stabil
+        docker build -t reginaa04/model-sml:latest .
 
     - name: Push Docker Image to Docker Hub
       run: |
