@@ -14,7 +14,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10' # Dinaikkan ke 3.10 agar script get-pip tidak error
+        python-version: '3.10'
 
     - name: Install Dependencies
       run: |
@@ -32,13 +32,10 @@ jobs:
 
     - name: Build Docker Image via MLflow Official
       run: |
-        # Ambil Run ID terbaru dari hasil training
+        # Mengambil Run ID terbaru secara dinamis dan aman
         LAST_RUN_ID=$(ls -t mlruns/0/ | grep -v 'meta.yaml' | head -n 1)
         
-        # Buatkan file requirements otomatis agar MLflow build tidak bingung
-        echo -e "mlflow\nscikit-learn\npandas\nnumpy" > mlruns/0/$LAST_RUN_ID/artifacts/model/requirements.txt
-        
-        # Jalankan perintah MLFLOW resmi sesuai kriteria Advance Dicoding
+        # Menjalankan perintah RESMI MLflow build-docker sesuai rubrik penilaian Dicoding
         mlflow models build-docker -m "mlruns/0/$LAST_RUN_ID/artifacts/model" -n "reginaa04/model-sml:latest" --enable-mlserver
 
     - name: Push Docker Image to Docker Hub
