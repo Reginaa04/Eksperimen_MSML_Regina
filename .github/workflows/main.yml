@@ -32,7 +32,7 @@ jobs:
 
     - name: Build Docker Image via MLflow
       run: |
-        # Membungkus model menjadi Docker Image resmi
+        # Membungkus model hasil run menjadi Docker Image resmi
         mlflow models build-docker -m "mlruns/0" -n "reginaa04/model-sml:latest" --enable-mlserver
 
     - name: Push Docker Image to Docker Hub
