@@ -32,8 +32,8 @@ jobs:
 
     - name: Build Docker Image via MLflow
       run: |
-        # Tembak langsung folder v1_model yang sudah pasti dibuat oleh python tadi!
-        mlflow models build-docker -m "v1_model" -n "reginaa04/model-sml:latest" --enable-mlserver
+        # Kita arahkan jalurnya ke MLProject/v1_model karena disitulah python menyimpannya!
+        mlflow models build-docker -m "MLProject/v1_model" -n "reginaa04/model-sml:latest" --enable-mlserver
 
     - name: Push Docker Image to Docker Hub
       run: |
