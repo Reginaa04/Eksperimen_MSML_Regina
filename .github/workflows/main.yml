@@ -22,6 +22,7 @@ jobs:
 
     - name: Run MLflow Project (Training)
       run: |
+        # Menjalankan training MLflow secara lokal
         mlflow run MLProject --env-manager local
 
     - name: Log in to Docker Hub
@@ -30,10 +31,12 @@ jobs:
         username: reginaa04
         password: dckr_pat_dxWp9BtW0beIytM5XFuCgJORUBw
 
-    - name: Build Docker Image Standard
+    - name: Build Docker Image via MLflow Official
       run: |
-        # Menggunakan perintah docker build standar yang anti-gagal dan super stabil
-        docker build -t reginaa04/model-sml:latest .
+        # MENGGUNAKAN FUNGSI MLFLOW BUILD-DOCKER SESUAI KRITERIA 3 ADVANCE
+        # Kita ambil Run ID terakhir dari folder mlruns menggunakan fitur runs:/ resmi MLflow
+        LAST_RUN_ID=$(ls -t mlruns/0/ | grep -v 'meta.yaml' | head -n 1)
+        mlflow models build-docker -m "runs:/$LAST_RUN_ID/model" -n "reginaa04/model-sml:latest" --enable-mlserver
 
     - name: Push Docker Image to Docker Hub
       run: |
