@@ -1,0 +1,3 @@
+Berikut adalah link bukti GitHub Actions CI/CD Workflow yang telah berjalan dengan sukses:
+
+Link GitHub Actions: https://github.com/Reginaa04/Eksperimen_MSML_Regina/actions
