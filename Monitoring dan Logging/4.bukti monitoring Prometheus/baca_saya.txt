@@ -1,0 +1,1 @@
+Simpan screenshot grafik target metrik dari web Prometheus di sini.
