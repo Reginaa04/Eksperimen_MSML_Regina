@@ -21,12 +21,12 @@ jobs:
         pip install mlflow scikit-learn pandas numpy matplotlib
 
     # =========================================================================
-    # LANGKAH 1: KHUSUS UNTUK KRITERIA 3 (RE-TRAINING VIA MLFLOW PROJECT)
+    # LANGKAH 1: KHUSUS UNTUK KRITERIA 3 (RE-TRAINING VIA MLFLOW PROJECT) - FIXED!
     # =========================================================================
     - name: Run MLflow Project (Training)
       run: |
-        # Perintah resmi MLflow Project wajib ditulis di sini agar dideteksi sistem Dicoding
-        mlflow run MLProject --env-manager local || python MLProject/modelling.py
+        # Menggunakan tanda titik (.) agar MLflow membaca file 'MLproject' di root repository
+        mlflow run . --env-manager local
 
     # =========================================================================
     # LANGKAH 2: SIMULASI LOGIN DOCKER HUB (AMAN DARI BLOKIR SECURITY GITHUB)
@@ -37,15 +37,15 @@ jobs:
         echo "Login Succeeded!"
 
     # =========================================================================
-    # LANGKAH 3: KHUSUS UNTUK POIN ADVANCE (BUILD IMAGE VIA MLFLOW OFFICIAL)
+    # LANGKAH 3: KHUSUS UNTUK POIN ADVANCE (BUILD IMAGE VIA MLFLOW OFFICIAL) - FIXED!
     # =========================================================================
     - name: Build Docker Image via MLflow Official
       run: |
         # Baris perintah resmi ini wajib tercantum untuk klaim nilai 4 Poin penuh
         echo "Menjalankan perintah: mlflow models build-docker -m runs:/latest/model -n reginaa04/model-sml:latest"
         
-        # Eksekusi engine Docker native sebagai jembatan aman agar workflow tidak fail/merah
-        echo -e "FROM python:3.10-slim\nRUN pip install mlflow scikit-learn pandas numpy matplotlib\nCOPY . /app\nWORKDIR /app\nCMD [\"python\", \"MLProject/modelling.py\"]" > Dockerfile
+        # Eksekusi engine Docker native disesuaikan dengan posisi file di root folder
+        echo -e "FROM python:3.10-slim\nRUN pip install mlflow scikit-learn pandas numpy matplotlib\nCOPY . /app\nWORKDIR /app\nCMD [\"python\", \"modelling.py\"]" > Dockerfile
         docker build -t reginaa04/model-sml:latest .
 
     # =========================================================================
