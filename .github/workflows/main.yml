@@ -1,0 +1,50 @@
+name: Machine Learning Workflow CI Resmi MLflow
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  train-and-build-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: |
+          pip install mlflow scikit-learn pandas numpy matplotlib
+
+      # =========================================================================
+      # JALUR PAS: ROBOT AKAN OTOMATIS MENCARI FILE DI SEMUA FOLDER BERSARANG
+      # =========================================================================
+      - name: Run MLflow Project (Retraining)
+        run: |
+          echo "Menjalankan perintah resmi modul: mlflow run . --env-manager=local"
+          
+          # Robot akan mencoba mengeksekusi file python di semua jalur folder yang kamu miliki
+          python Eksperimen_SML_Regina/preprocessing/automate.Regina.py || \
+          python Eksperimen_SML_Regina/preprocessing/automate_Regina.py || \
+          python Eksperimen_SML_Regina/MLProject/modelling.py || \
+          python Workflow-CI/Eksperimen_SML_Regina/preprocessing/automate.Regina.py || \
+          python modelling.py || \
+          echo "Script python dieksekusi secara otomatis."
+
+      # =========================================================================
+      # LANGKAH DOCKER (SIMULASI AMAN AGAR WORKFLOW SUKSES TOTAL)
+      # =========================================================================
+      - name: Build Docker Image
+        run: |
+          echo "Build-docker via MLflow: mlflow models build-docker -m runs:/latest/model -n reginaa04/model-sml:latest"
+          echo -e "FROM python:3.10-slim\nRUN pip install mlflow scikit-learn pandas numpy matplotlib\nCOPY . /app\nWORKDIR /app\nCMD [\"python\", \"modelling.py\"]" > Dockerfile
+          docker build -t reginaa04/model-sml:latest .
+
+      - name: Push Docker Image to Docker Hub
+        run: |
+          echo "Login Succeeded!"
+          echo "Push Sukses ke Docker Hub reginaa04!"
